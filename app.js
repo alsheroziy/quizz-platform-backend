@@ -1,15 +1,15 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const dotenv = require('dotenv');
-const authRoutes = require('./routes/auth');
-const quizzRoutes = require('./routes/quizz');
+import express from 'express';
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+import authRoutes from './routes/auth.js';
+import quizzRoutes from './routes/quizz.js';
 
 dotenv.config();
 
 const app = express();
 app.use(express.json());
 
-// MongoDB bilan ulanish
+// Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -17,13 +17,13 @@ mongoose.connect(process.env.MONGODB_URI, {
 .then(() => console.log('MongoDBga ulanish muvaffaqiyatli'))
 .catch(err => console.error('MongoDBga ulanishda xato:', err));
 
-// Auth routerini ulash
+// Connect the auth router
 app.use('/auth', authRoutes);
 
-// Quizz routerini ulash
+// Connect the Quizz router
 app.use('/api/quizz', quizzRoutes);
 
-// Serverni ishga tushirish
+// Start the server
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
     console.log(`Server ${PORT} portda ishlayapti`);

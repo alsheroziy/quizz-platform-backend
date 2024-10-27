@@ -1,7 +1,7 @@
-const Quizz = require('../models/Quizz');
+import Quizz from '../models/quizz.js';
 
-// Quizz yaratish
-exports.createQuizz = async (req, res) => {
+// Create a quiz
+export const createQuizz = async (req, res) => {
     const { title, description, questions } = req.body;
     const image = req.file ? req.file.path : null;
 
@@ -16,8 +16,8 @@ exports.createQuizz = async (req, res) => {
     }
 };
 
-// Komment qo'shish
-exports.addComment = async (req, res) => {
+// Add a comment
+export const addComment = async (req, res) => {
     const { comment } = req.body;
     try {
         const quizz = await Quizz.findById(req.params.quizzId);
@@ -29,8 +29,8 @@ exports.addComment = async (req, res) => {
     }
 };
 
-// Kommentlarni olish
-exports.getComments = async (req, res) => {
+// Get comments
+export const getComments = async (req, res) => {
     try {
         const quizz = await Quizz.findById(req.params.quizzId).populate('comments.userId', 'firstname lastname');
         if (!quizz) {
@@ -42,8 +42,8 @@ exports.getComments = async (req, res) => {
     }
 };
 
-// Like qo'shish
-exports.likeQuizz = async (req, res) => {
+// Add a like
+export const likeQuizz = async (req, res) => {
     try {
         const quizz = await Quizz.findById(req.params.id);
         quizz.likes += 1;
@@ -54,8 +54,8 @@ exports.likeQuizz = async (req, res) => {
     }
 };
 
-// Dislike qo'shish
-exports.dislikeQuizz = async (req, res) => {
+// Add dislike
+export const dislikeQuizz = async (req, res) => {
     try {
         const quizz = await Quizz.findById(req.params.id);
         quizz.dislikes += 1;

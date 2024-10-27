@@ -1,9 +1,9 @@
-const User = require('../models/User');
-const bcrypt = require('bcryptjs'); // bcryptjs dan foydalanish
-const jwt = require('jsonwebtoken');
+import User from '../models/user.js';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 
-// Foydalanuvchini ro'yxatdan o'tkazish
-exports.register = async (req, res) => {
+// Register the user
+export const register = async (req, res) => {
     const { firstname, lastname, email, username, password } = req.body;
 
     try {
@@ -14,7 +14,7 @@ exports.register = async (req, res) => {
             email,
             username,
             password: hashedPassword,
-            role: 'user', // Foydalanuvchini standart roli
+            role: 'user', // Default user role
         });
 
         await newUser.save();
@@ -24,8 +24,8 @@ exports.register = async (req, res) => {
     }
 };
 
-// Foydalanuvchini login qilish
-exports.login = async (req, res) => {
+// User login
+export const login = async (req, res) => {
     const { emailOrUsername, password } = req.body;
 
     try {
@@ -47,8 +47,8 @@ exports.login = async (req, res) => {
     }
 };
 
-// Adminni ro'yxatdan o'tkazish
-exports.adminRegister = async (req, res) => {
+// Register admin
+export const adminRegister = async (req, res) => {
     const { firstname, lastname, email, username, password } = req.body;
 
     try {
@@ -59,7 +59,7 @@ exports.adminRegister = async (req, res) => {
             email,
             username,
             password: hashedPassword,
-            role: 'admin' // Admin rolini belgilash
+            role: 'admin' // Assign admin role
         });
 
         await newAdmin.save();

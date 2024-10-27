@@ -1,12 +1,13 @@
-const express = require('express');
-const router = express.Router();
-const commentController = require('../controllers/commentController');
-const authMiddleware = require('../middleware/auth');
+import express from 'express';
+import * as commentController from '../controllers/commentController.js';
+import authMiddleware from '../middleware/auth.js';
 
-// Komment qo'shish
+const router = express.Router();
+
+// Add a comment
 router.post('/:quizzId', authMiddleware, commentController.addComment);
 
-// Admin javobini qo'shish
+// Add admin response
 router.put('/reply/:quizzId/:commentId', authMiddleware, commentController.replyComment);
 
-module.exports = router;
+export default router;

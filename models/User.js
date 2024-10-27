@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const UserSchema = new mongoose.Schema({
     firstname: {
@@ -25,9 +25,9 @@ const UserSchema = new mongoose.Schema({
     },
     role: {
         type: String,
-        default: 'user', // Foydalanuvchining standart roli
-        enum: ['user', 'admin'], // Faqat 'user' yoki 'admin' ro'lini qabul qiladi
+        default: 'user', // The user's default role
+        enum: ['user', 'admin'], // Only accepts 'user' or 'admin' role
     },
 }, { timestamps: true });
 
-module.exports = mongoose.model('User', UserSchema);
+export default mongoose.model('User', UserSchema);
