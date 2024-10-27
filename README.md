@@ -35,6 +35,7 @@ To run this project, you'll need:
    ```env
    JWT_SECRET=your_secret_key
    MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/dbname
+	 PORT=4000
    ```
 
 4. Start the server:
