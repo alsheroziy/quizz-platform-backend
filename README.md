@@ -22,7 +22,7 @@ To run this project, you'll need:
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/quizz-platform-backend.git
+   git clone https://github.com/alsheroziy/quizz-platform-backend.git
    cd quizz-platform-backend
    ```
 
@@ -39,10 +39,10 @@ To run this project, you'll need:
 
 4. Start the server:
    ```bash
-   npm start
+   npm run dev
    ```
 
-   The server will start running on `http://localhost:3000`.
+   The server will start running on `http://localhost:4000`.
 
 ## API Endpoints
 
