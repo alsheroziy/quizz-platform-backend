@@ -9,17 +9,15 @@ import quizzRoutes from './routes/quizz.js';
 import commentRoutes from './routes/comments.js';
 import rankingRoutes from './routes/rankings.js';
 import projectRoutes from './routes/project.js';
-import taskRoutes from './routes/task.js';
-import submissionRoutes from './routes/submission.js';
+import blogRoutes from './routes/blog.js';
 import userRoutes from './routes/user.js';
 import adminRoutes from './routes/admin.js';
+import taskRoutes from './routes/task.js'; // Task marshrutlarini import qilamiz
 
 dotenv.config();
 
 const app = express();
-// CORS konfiguratsiyasi - barcha domenlarga ruxsat berish
-app.use(cors());
-
+app.use(cors()); // Barcha domenlarga ruxsat berish
 app.use(express.json());
 
 // Ma'lumotlar bazasiga ulanish
@@ -40,17 +38,17 @@ app.use('/api/rankings', rankingRoutes);
 // Loyiha marshrutlarini ulash
 app.use('/api/projects', projectRoutes);
 
-// Vazifalar marshrutlarini ulash
-app.use('/api/tasks', taskRoutes);
-
-// Yuborishlar marshrutlarini ulash
-app.use('/api/submissions', submissionRoutes);
+// Blog marshrutlarini ulash
+app.use('/api/blogs', blogRoutes);
 
 // Foydalanuvchi marshrutlarini ulash
 app.use('/api/user', userRoutes);
 
 // Admin marshrutlarini ulash
 app.use('/api/admin', adminRoutes);
+
+// Task marshrutlarini ulash
+app.use('/api/tasks', taskRoutes); // Task marshrutlarini ulash
 
 // Serverni ishga tushirish
 const PORT = process.env.PORT || 4000;

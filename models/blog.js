@@ -1,27 +1,19 @@
-// models/task.js
+// models/blog.js
 import mongoose from 'mongoose';
 
-const taskSchema = new mongoose.Schema({
+const blogSchema = new mongoose.Schema({
     title: {
         type: String,
-        required: true,
+        required: true
     },
     description: {
         type: String,
-        default: ''
+        required: true
     },
     image: {
         type: String,
         default: null
     },
-    link: {
-        type: String,
-        default: null
-    },
-    assignedUsers: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
-    }],
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
@@ -33,4 +25,4 @@ const taskSchema = new mongoose.Schema({
     }
 });
 
-export default mongoose.model('Task', taskSchema);
+export default mongoose.model('Blog', blogSchema);
