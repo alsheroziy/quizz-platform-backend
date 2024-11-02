@@ -1,22 +1,26 @@
+// routes/quizz.js
 import express from 'express';
 import * as quizzController from '../controllers/quizzController.js';
 import authMiddleware from '../middleware/auth.js';
 
 const router = express.Router();
 
-// Quizz create
+// Quizz yaratish
 router.post('/create', authMiddleware, quizzController.createQuizz);
 
-// Add a comment to the quiz
-router.post('/:quizzId/comments', authMiddleware, quizzController.addComment);
+// Barcha quizzlarni olish
+router.get('/', quizzController.getAllQuizzes);
 
-// Get comments on the quiz
-router.get('/:quizzId/comments', authMiddleware, quizzController.getComments);
+// Quizzni ID bo'yicha olish
+router.get('/:id', quizzController.getQuizzById);
 
-// Add a like to the quiz
+// Quizzga javoblarni yuborish
+router.post('/:id/submit', authMiddleware, quizzController.submitQuizz);
+
+// Quizzga like qo'shish
 router.post('/like/:id', authMiddleware, quizzController.likeQuizz);
 
-// Dislike the quiz
+// Quizzga dislike qo'shish
 router.post('/dislike/:id', authMiddleware, quizzController.dislikeQuizz);
 
 export default router;

@@ -1,12 +1,19 @@
+// controllers/authController.js
 import User from '../models/user.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
-// Register the user
+// Foydalanuvchini ro'yxatdan o'tkazish
 export const register = async (req, res) => {
     const { firstname, lastname, email, username, password } = req.body;
 
     try {
+        // Foydalanuvchi mavjudligini tekshirish
+        const existingUser = await User.findOne({ $or: [{ email }, { username }] });
+        if (existingUser) {
+            return res.status(400).json({ message: 'Email yoki username allaqachon mavjud' });
+        }
+
         const hashedPassword = await bcrypt.hash(password, 10);
         const newUser = new User({
             firstname,
@@ -14,7 +21,7 @@ export const register = async (req, res) => {
             email,
             username,
             password: hashedPassword,
-            role: 'user', // Default user role
+            role: 'user', // Standart foydalanuvchi roli
         });
 
         await newUser.save();
@@ -24,7 +31,7 @@ export const register = async (req, res) => {
     }
 };
 
-// User login
+// Foydalanuvchini tizimga kiritish
 export const login = async (req, res) => {
     const { emailOrUsername, password } = req.body;
 
@@ -47,11 +54,17 @@ export const login = async (req, res) => {
     }
 };
 
-// Register admin
+// Adminni ro'yxatdan o'tkazish
 export const adminRegister = async (req, res) => {
     const { firstname, lastname, email, username, password } = req.body;
 
     try {
+        // Foydalanuvchi mavjudligini tekshirish
+        const existingUser = await User.findOne({ $or: [{ email }, { username }] });
+        if (existingUser) {
+            return res.status(400).json({ message: 'Email yoki username allaqachon mavjud' });
+        }
+
         const hashedPassword = await bcrypt.hash(password, 10);
         const newAdmin = new User({
             firstname,
@@ -59,7 +72,7 @@ export const adminRegister = async (req, res) => {
             email,
             username,
             password: hashedPassword,
-            role: 'admin' // Assign admin role
+            role: 'admin' // Admin rolini berish
         });
 
         await newAdmin.save();

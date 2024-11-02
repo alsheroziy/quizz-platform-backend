@@ -1,67 +1,126 @@
+// controllers/quizzController.js
 import Quizz from '../models/quizz.js';
+import Submission from '../models/submission.js'; // Submission modelini import qilamiz
 
-// Create a quiz
+// Quizz yaratish
 export const createQuizz = async (req, res) => {
-    const { title, description, questions } = req.body;
-    const image = req.file ? req.file.path : null;
+    const { title, description, questions, image } = req.body;
 
-    if (req.user.role !== 'admin') return res.status(403).send("Ruxsat yo'q");
+    if (req.user.role !== 'admin') return res.status(403).json({ message: "Ruxsat yo'q" });
 
     try {
-        const quizz = new Quizz({ title, description, questions, createdBy: req.user.userId });
+        // Har bir savol uchun to'g'ri javob variantlar ichida ekanligini tekshiramiz
+        for (let question of questions) {
+            if (!question.options.includes(question.answer)) {
+                return res.status(400).json({
+                    message: `Savol "${question.question}" uchun javob variantlar ichida emas`,
+                });
+            }
+        }
+
+        const quizz = new Quizz({
+            title,
+            description,
+            questions,
+            image: image || null,
+            createdBy: req.user.id,
+        });
         await quizz.save();
-        res.status(201).send("Quizz yaratildi");
+        res.status(201).json({ message: "Quizz yaratildi" });
     } catch (err) {
-        res.status(400).send("Xatolik yuz berdi");
+        res.status(400).json({ message: "Xatolik yuz berdi", error: err.message });
     }
 };
 
-// Add a comment
-export const addComment = async (req, res) => {
-    const { comment } = req.body;
+// Barcha quizzlarni olish
+export const getAllQuizzes = async (req, res) => {
     try {
-        const quizz = await Quizz.findById(req.params.quizzId);
-        quizz.comments.push({ userId: req.user.userId, comment });
-        await quizz.save();
-        res.status(201).send("Komment qo'shildi");
+        const quizzes = await Quizz.find({}, '-questions.answer').populate('createdBy', 'firstname lastname');
+        res.status(200).json(quizzes);
     } catch (err) {
-        res.status(400).send("Xatolik yuz berdi");
+        res.status(500).json({ message: "Xatolik yuz berdi", error: err.message });
     }
 };
 
-// Get comments
-export const getComments = async (req, res) => {
+// Quizzni ID bo'yicha olish
+export const getQuizzById = async (req, res) => {
     try {
-        const quizz = await Quizz.findById(req.params.quizzId).populate('comments.userId', 'firstname lastname');
+        const quizz = await Quizz.findById(req.params.id, '-questions.answer').populate('createdBy', 'firstname lastname');
         if (!quizz) {
             return res.status(404).json({ message: 'Quizz topilmadi' });
         }
-        res.status(200).json({ comments: quizz.comments });
+        res.status(200).json(quizz);
     } catch (err) {
-        res.status(400).send("Xatolik yuz berdi");
+        res.status(500).json({ message: "Xatolik yuz berdi", error: err.message });
     }
 };
 
-// Add a like
+// Quizzga javoblarni yuborish
+export const submitQuizz = async (req, res) => {
+    try {
+        const quizz = await Quizz.findById(req.params.id);
+        if (!quizz) {
+            return res.status(404).json({ message: 'Quizz topilmadi' });
+        }
+
+        const userAnswers = req.body.answers; // { questionId: answer, ... }
+
+        // Savol ID larini string formatga o'girib, to'plam (Set) yaratamiz
+        const questionIds = new Set(quizz.questions.map(q => q._id.toString()));
+
+        // Foydalanuvchining yuborgan javoblarini tekshiramiz
+        for (let questionId of Object.keys(userAnswers)) {
+            if (!questionIds.has(questionId)) {
+                return res.status(400).json({ message: `Noto'g'ri savol ID: ${questionId}` });
+            }
+            const answer = userAnswers[questionId];
+            if (typeof answer !== 'string') {
+                return res.status(400).json({ message: `Javob noto'g'ri formatda: ${questionId}` });
+            }
+        }
+
+        let score = 0;
+
+        quizz.questions.forEach((question) => {
+            const questionIdStr = question._id.toString();
+            const userAnswer = userAnswers[questionIdStr];
+            if (userAnswer && userAnswer === question.answer) {
+                score += 1;
+            }
+        });
+
+        // Javoblarni va natijani saqlaymiz
+        const submission = new Submission({
+            user: req.user.id,
+            quizz: quizz._id,
+            score: score,
+            totalQuestions: quizz.questions.length,
+            answers: userAnswers
+        });
+        await submission.save();
+
+        res.status(200).json({ score, total: quizz.questions.length });
+    } catch (err) {
+        res.status(500).json({ message: "Xatolik yuz berdi", error: err.message });
+    }
+};
+
+// Like
 export const likeQuizz = async (req, res) => {
     try {
-        const quizz = await Quizz.findById(req.params.id);
-        quizz.likes += 1;
-        await quizz.save();
-        res.status(200).send("Like bosildi");
+        await Quizz.findByIdAndUpdate(req.params.id, { $inc: { likes: 1 } });
+        res.status(200).json({ message: "Like bosildi" });
     } catch (err) {
-        res.status(400).send("Xatolik yuz berdi");
+        res.status(400).json({ message: "Xatolik yuz berdi", error: err.message });
     }
 };
 
-// Add dislike
+// Dislike
 export const dislikeQuizz = async (req, res) => {
     try {
-        const quizz = await Quizz.findById(req.params.id);
-        quizz.dislikes += 1;
-        await quizz.save();
-        res.status(200).send("Dislike bosildi");
+        await Quizz.findByIdAndUpdate(req.params.id, { $inc: { dislikes: 1 } });
+        res.status(200).json({ message: "Dislike bosildi" });
     } catch (err) {
-        res.status(400).send("Xatolik yuz berdi");
+        res.status(400).json({ message: "Xatolik yuz berdi", error: err.message });
     }
 };

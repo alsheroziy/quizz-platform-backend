@@ -1,15 +1,16 @@
+// routes/auth.js
 import express from 'express';
 import { register, login, adminRegister } from '../controllers/authController.js';
 
 const router = express.Router();
 
-// User registration
+// Foydalanuvchini ro'yxatdan o'tkazish
 router.post('/register', register);
 
-// User login
+// Foydalanuvchini tizimga kiritish
 router.post('/login', login);
 
-// Register admin
+// Adminni ro'yxatdan o'tkazish
 router.post('/admin', adminRegister);
 
 export default router;

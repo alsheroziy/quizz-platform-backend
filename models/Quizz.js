@@ -1,4 +1,24 @@
+// models/quizz.js
 import mongoose from 'mongoose';
+
+const questionSchema = new mongoose.Schema({
+    question: {
+        type: String,
+        required: true,
+    },
+    options: {
+        type: [String],
+        required: true,
+    },
+    answer: {
+        type: String,
+        required: true,
+    },
+    image: {
+        type: String,
+        default: null,
+    },
+});
 
 const quizzSchema = new mongoose.Schema({
     title: {
@@ -9,32 +29,19 @@ const quizzSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    questions: [{
-        question: {
-            type: String,
-            required: true,
-        },
-        options: {
-            type: [String],
-            required: true,
-        },
-        answer: {
-            type: String,
-            required: true,
-        },
-        image: {
-            type: String,
-            default: null,
-        },
-        likes: {
-            type: Number,
-            default: 0,
-        },
-        dislikes: {
-            type: Number,
-            default: 0,
-        }
-    }],
+    image: {
+        type: String,
+        default: null,
+    },
+    questions: [questionSchema],
+    likes: {
+        type: Number,
+        default: 0,
+    },
+    dislikes: {
+        type: Number,
+        default: 0,
+    },
     comments: [{
         userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
         comment: { type: String, required: true },

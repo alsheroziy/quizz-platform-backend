@@ -1,3 +1,5 @@
+// models/user.js
+
 import mongoose from 'mongoose';
 
 const UserSchema = new mongoose.Schema({
@@ -25,9 +27,9 @@ const UserSchema = new mongoose.Schema({
     },
     role: {
         type: String,
-        default: 'user', // The user's default role
-        enum: ['user', 'admin'], // Only accepts 'user' or 'admin' role
+        default: 'user', // Foydalanuvchining standart roli
+        enum: ['user', 'admin'], // Faqat 'user' yoki 'admin' qabul qiladi
     },
-}, { timestamps: true });
+}, { timestamps: true }); // timestamps qo'shilishi bilan 'createdAt' va 'updatedAt' maydonlari avtomatik ravishda saqlanadi
 
 export default mongoose.model('User', UserSchema);
