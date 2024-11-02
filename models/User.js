@@ -1,6 +1,20 @@
 // models/user.js
-
 import mongoose from 'mongoose';
+
+const sessionSchema = new mongoose.Schema({
+    device: {
+        type: String,
+        required: true,
+    },
+    ip: {
+        type: String,
+        required: true,
+    },
+    lastAccessed: {
+        type: Date,
+        default: Date.now,
+    },
+});
 
 const UserSchema = new mongoose.Schema({
     firstname: {
@@ -27,9 +41,14 @@ const UserSchema = new mongoose.Schema({
     },
     role: {
         type: String,
-        default: 'user', // Foydalanuvchining standart roli
-        enum: ['user', 'admin'], // Faqat 'user' yoki 'admin' qabul qiladi
+        default: 'user',
+        enum: ['user', 'admin'],
     },
-}, { timestamps: true }); // timestamps qo'shilishi bilan 'createdAt' va 'updatedAt' maydonlari avtomatik ravishda saqlanadi
+    image: {
+        type: String,
+        default: null,
+    },
+    sessions: [sessionSchema], // Kirish tarixi va qurilma ma'lumotlarini saqlash
+}, { timestamps: true });
 
 export default mongoose.model('User', UserSchema);

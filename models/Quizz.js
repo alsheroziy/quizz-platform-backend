@@ -29,6 +29,10 @@ const quizzSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    category: { // Yangi kategoriya maydoni qo'shildi
+        type: String,
+        required: true,
+    },
     image: {
         type: String,
         default: null,

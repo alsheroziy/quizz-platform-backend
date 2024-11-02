@@ -2,9 +2,22 @@
 import Quizz from '../models/quizz.js';
 import Submission from '../models/submission.js'; // Submission modelini import qilamiz
 
+// Barcha quizzlarni olish (kategoriya bo'yicha qidirish bilan)
+export const getAllQuizzes = async (req, res) => {
+    try {
+        const { category } = req.query; // Query orqali kategoriya olamiz
+        const query = category ? { category: { $regex: category, $options: "i" } } : {}; // Agar kategoriya bo'lsa, filter qo'llanadi
+
+        const quizzes = await Quizz.find(query, '-questions.answer').populate('createdBy', 'firstname lastname');
+        res.status(200).json(quizzes);
+    } catch (err) {
+        res.status(500).json({ message: "Xatolik yuz berdi", error: err.message });
+    }
+};
+
 // Quizz yaratish
 export const createQuizz = async (req, res) => {
-    const { title, description, questions, image } = req.body;
+    const { title, description, category, questions, image } = req.body;
 
     if (req.user.role !== 'admin') return res.status(403).json({ message: "Ruxsat yo'q" });
 
@@ -21,6 +34,7 @@ export const createQuizz = async (req, res) => {
         const quizz = new Quizz({
             title,
             description,
+            category, // Kategoriya maydoni qo'shildi
             questions,
             image: image || null,
             createdBy: req.user.id,
@@ -29,16 +43,6 @@ export const createQuizz = async (req, res) => {
         res.status(201).json({ message: "Quizz yaratildi" });
     } catch (err) {
         res.status(400).json({ message: "Xatolik yuz berdi", error: err.message });
-    }
-};
-
-// Barcha quizzlarni olish
-export const getAllQuizzes = async (req, res) => {
-    try {
-        const quizzes = await Quizz.find({}, '-questions.answer').populate('createdBy', 'firstname lastname');
-        res.status(200).json(quizzes);
-    } catch (err) {
-        res.status(500).json({ message: "Xatolik yuz berdi", error: err.message });
     }
 };
 
@@ -104,6 +108,7 @@ export const submitQuizz = async (req, res) => {
         res.status(500).json({ message: "Xatolik yuz berdi", error: err.message });
     }
 };
+
 
 // Like
 export const likeQuizz = async (req, res) => {

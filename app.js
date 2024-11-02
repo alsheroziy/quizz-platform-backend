@@ -7,6 +7,7 @@ import authRoutes from './routes/auth.js';
 import quizzRoutes from './routes/quizz.js';
 import commentRoutes from './routes/comments.js';
 import rankingRoutes from './routes/rankings.js';
+import projectRoutes from './routes/project.js';
 import adminRoutes from './routes/admin.js'; // Admin marshrutlarini import qilamiz
 
 dotenv.config();
@@ -28,6 +29,9 @@ app.use('/api/comments', commentRoutes);
 
 // Reyting marshrutlarini ulash
 app.use('/api/rankings', rankingRoutes);
+
+// Loyiha marshrutlarini ulash
+app.use('/api/projects', projectRoutes);
 
 // Admin marshrutlarini ulash
 app.use('/api/admin', adminRoutes);

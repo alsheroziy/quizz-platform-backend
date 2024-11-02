@@ -8,7 +8,7 @@ const router = express.Router();
 // Quizz yaratish
 router.post('/create', authMiddleware, quizzController.createQuizz);
 
-// Barcha quizzlarni olish
+// Barcha quizzlarni olish (kategoriya bo'yicha qidirish bilan)
 router.get('/', quizzController.getAllQuizzes);
 
 // Quizzni ID bo'yicha olish

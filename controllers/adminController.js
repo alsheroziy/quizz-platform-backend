@@ -10,7 +10,7 @@ export const getUsers = async (req, res) => {
         const limit = parseInt(req.query.limit) || 10; // Har bir sahifada nechtalik, standart 10
         const skip = (page - 1) * limit; // Qaysi foydalanuvchidan boshlab olish kerakligini hisoblash
 
-        const users = await User.find({}, 'firstname lastname email createdAt')
+        const users = await User.find({}, 'firstname lastname email image createdAt') // `image` maydonini qo'shamiz
                                 .skip(skip)
                                 .limit(limit);
 
