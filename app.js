@@ -8,6 +8,7 @@ import quizzRoutes from './routes/quizz.js';
 import commentRoutes from './routes/comments.js';
 import rankingRoutes from './routes/rankings.js';
 import projectRoutes from './routes/project.js';
+import userRoutes from './routes/user.js';
 import adminRoutes from './routes/admin.js'; // Admin marshrutlarini import qilamiz
 
 dotenv.config();
@@ -32,6 +33,9 @@ app.use('/api/rankings', rankingRoutes);
 
 // Loyiha marshrutlarini ulash
 app.use('/api/projects', projectRoutes);
+
+// Foydalanuvchi marshrutlarini ulash
+app.use('/api/user', userRoutes);
 
 // Admin marshrutlarini ulash
 app.use('/api/admin', adminRoutes);

@@ -87,3 +87,26 @@ export const editQuizz = async (req, res) => {
         res.status(500).json({ message: "Xatolik yuz berdi", error: err.message });
     }
 };
+
+// Foydalanuvchiga adminlik huquqini berish
+export const grantAdminRights = async (req, res) => {
+    try {
+        // Foydalanuvchi ID'sini olish
+        const userId = req.params.id;
+
+        // Foydalanuvchini topish va admin qilish
+        const user = await User.findByIdAndUpdate(
+            userId,
+            { role: 'admin' },
+            { new: true }
+        );
+
+        if (!user) {
+            return res.status(404).json({ message: "Foydalanuvchi topilmadi" });
+        }
+
+        res.status(200).json({ message: "Foydalanuvchiga admin huquqi berildi", user });
+    } catch (error) {
+        res.status(500).json({ message: "Xatolik yuz berdi", error: error.message });
+    }
+};

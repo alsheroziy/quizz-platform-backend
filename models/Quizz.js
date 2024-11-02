@@ -29,7 +29,7 @@ const quizzSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    category: { // Yangi kategoriya maydoni qo'shildi
+    category: {
         type: String,
         required: true,
     },
@@ -38,6 +38,10 @@ const quizzSchema = new mongoose.Schema({
         default: null,
     },
     questions: [questionSchema],
+    timeLimit: { // Yangi maydon - vaqt limiti (sekundlarda)
+        type: Number,
+        default: null, // Agar vaqt limiti yo'q bo'lsa, null bo'ladi
+    },
     likes: {
         type: Number,
         default: 0,

@@ -10,6 +10,14 @@ const projectSchema = new mongoose.Schema({
         ref: 'User',
         required: true,
     },
+    creatorImage: {
+        type: String,
+        default: null,
+    },
+    description: {
+        type: String,
+        default: '',
+    },
     image: {
         type: String,
         default: null,
@@ -30,10 +38,29 @@ const projectSchema = new mongoose.Schema({
         type: Number,
         default: 0,
     },
+    views: {
+        type: Number,
+        default: 0,
+    },
+    comments: [
+        {
+            userId: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'User',
+            },
+            comment: {
+                type: String,
+            },
+            createdAt: {
+                type: Date,
+                default: Date.now,
+            },
+        },
+    ],
     createdAt: {
         type: Date,
         default: Date.now,
-    }
+    },
 });
 
 export default mongoose.model('Project', projectSchema);

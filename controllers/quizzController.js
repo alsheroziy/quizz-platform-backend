@@ -17,12 +17,11 @@ export const getAllQuizzes = async (req, res) => {
 
 // Quizz yaratish
 export const createQuizz = async (req, res) => {
-    const { title, description, category, questions, image } = req.body;
+    const { title, description, category, questions, image, timeLimit } = req.body;
 
     if (req.user.role !== 'admin') return res.status(403).json({ message: "Ruxsat yo'q" });
 
     try {
-        // Har bir savol uchun to'g'ri javob variantlar ichida ekanligini tekshiramiz
         for (let question of questions) {
             if (!question.options.includes(question.answer)) {
                 return res.status(400).json({
@@ -34,9 +33,10 @@ export const createQuizz = async (req, res) => {
         const quizz = new Quizz({
             title,
             description,
-            category, // Kategoriya maydoni qo'shildi
+            category,
             questions,
             image: image || null,
+            timeLimit: timeLimit || null, // Vaqt limiti kiritilgan bo'lsa, qo'shamiz
             createdBy: req.user.id,
         });
         await quizz.save();
