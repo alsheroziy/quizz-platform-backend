@@ -1,4 +1,3 @@
-// models/quizz.js
 import mongoose from 'mongoose';
 
 const questionSchema = new mongoose.Schema({
@@ -38,9 +37,9 @@ const quizzSchema = new mongoose.Schema({
         default: null,
     },
     questions: [questionSchema],
-    timeLimit: { // Yangi maydon - vaqt limiti (sekundlarda)
-        type: Number,
-        default: null, // Agar vaqt limiti yo'q bo'lsa, null bo'ladi
+    timeLimit: { 
+        type: Date, 
+        default: null // Sana va vaqt limitini saqlash uchun Date formatida
     },
     likes: {
         type: Number,

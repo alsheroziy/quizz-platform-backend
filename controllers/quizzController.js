@@ -36,11 +36,11 @@ export const createQuizz = async (req, res) => {
             category,
             questions,
             image: image || null,
-            timeLimit: timeLimit || null, // Vaqt limiti kiritilgan bo'lsa, qo'shamiz
+            timeLimit: timeLimit ? new Date(timeLimit) : null, // Sana va vaqt limitini saqlash
             createdBy: req.user.id,
         });
         await quizz.save();
-        res.status(201).json({ message: "Quizz yaratildi" });
+        res.status(201).json({ message: "Quizz yaratildi", quizz });
     } catch (err) {
         res.status(400).json({ message: "Xatolik yuz berdi", error: err.message });
     }

@@ -2,6 +2,7 @@
 
 import User from '../models/user.js';
 import Quizz from '../models/quizz.js';
+import Project from '../models/projects.js'; // Project modeliga to'g'ri yo'lni tekshiring
 
 // Foydalanuvchilar ro'yxatini olish (sahifalash bilan)
 export const getUsers = async (req, res) => {
@@ -70,7 +71,7 @@ export const getQuizzCount = async (req, res) => {
 export const editQuizz = async (req, res) => {
     try {
         const quizzId = req.params.id;
-        const { title, description, questions } = req.body;
+        const { title, description, questions, timeLimit } = req.body;
 
         const quizz = await Quizz.findById(quizzId);
         if (!quizz) {
@@ -80,6 +81,7 @@ export const editQuizz = async (req, res) => {
         quizz.title = title || quizz.title;
         quizz.description = description || quizz.description;
         quizz.questions = questions || quizz.questions;
+        quizz.timeLimit = timeLimit ? new Date(timeLimit) : quizz.timeLimit; // Sana va vaqt limitini yangilash
 
         await quizz.save();
         res.status(200).json({ message: "Quizz muvaffaqiyatli tahrirlandi", quizz });
@@ -108,5 +110,46 @@ export const grantAdminRights = async (req, res) => {
         res.status(200).json({ message: "Foydalanuvchiga admin huquqi berildi", user });
     } catch (error) {
         res.status(500).json({ message: "Xatolik yuz berdi", error: error.message });
+    }
+};
+
+// Loyihalar ro'yxatini olish
+export const getProjects = async (req, res) => {
+    try {
+        const projects = await Project.find().populate('creator', 'username');
+        const totalProjects = await Project.countDocuments();
+
+        res.status(200).json({
+            projects,
+            totalProjects
+        });
+    } catch (error) {
+        res.status(500).json({ message: "Loyihalarni olishda xato", error: error.message });
+    }
+};
+
+// Loyihani o'chirish
+export const deleteProject = async (req, res) => {
+    try {
+        const projectId = req.params.id;
+        const project = await Project.findByIdAndDelete(projectId);
+
+        if (!project) {
+            return res.status(404).json({ message: "Loyiha topilmadi" });
+        }
+
+        res.status(200).json({ message: "Loyiha muvaffaqiyatli o'chirildi" });
+    } catch (err) {
+        res.status(500).json({ message: "Xatolik yuz berdi", error: err.message });
+    }
+};
+
+// Umumiy loyihalar sonini olish
+export const getProjectCount = async (req, res) => {
+    try {
+        const projectCount = await Project.countDocuments();
+        res.status(200).json({ projectCount });
+    } catch (err) {
+        res.status(500).json({ message: "Xatolik yuz berdi", error: err.message });
     }
 };
