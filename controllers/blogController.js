@@ -1,9 +1,14 @@
 // controllers/blogController.js
 import Blog from '../models/blog.js';
 
-// Blog yaratish
+// Blog yaratish (faqat admin uchun)
 export const createBlog = async (req, res) => {
     const { title, description, image } = req.body;
+
+    // Faqat adminlar ruxsatini tekshirish
+    if (req.user.role !== 'admin') {
+        return res.status(403).json({ message: "Faqat adminlar blog yaratishi mumkin" });
+    }
 
     try {
         const blog = new Blog({

@@ -11,7 +11,7 @@ import {
 
 const router = express.Router();
 
-// Blog yaratish
+// Blog yaratish (faqat admin)
 router.post('/create', authMiddleware, createBlog);
 
 // Barcha bloglarni olish
